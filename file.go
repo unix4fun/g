@@ -6,8 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	//"github.com/unix4fun/pemaead"
-	"../pemaead"
+	"github.com/unix4fun/pemaead"
 )
 
 var (
