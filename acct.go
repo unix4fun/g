@@ -26,6 +26,7 @@ func (e totpEntry) Validate() error {
 	// check secret
 	_, err := normalizeGoogleAuthSecret(e.Secret)
 
+	fmt.Printf("%v\n", err)
 	if len(e.Secret) > 0 && err == nil {
 		switch e.Hash {
 		case "sha1", "sha256", "sha512":

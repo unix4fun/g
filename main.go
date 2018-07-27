@@ -53,9 +53,11 @@ var (
 // ABCDEFGHIJKLMNOPQRSTUVWXYZ234567 (= pad)
 //
 func normalizeGoogleAuthSecret(secret string) ([]byte, error) {
-	secEncodedStepOne := strings.ToUpper(strings.Replace(strings.Replace(secret, "-", "", -1), " ", "", -1))
-	secEndodedPadLen := 8 - (len(secEncodedStepOne) % 8)
-	secEncoded := secEncodedStepOne + strings.Repeat("=", secEndodedPadLen)
+	secEncoded := strings.ToUpper(strings.Replace(strings.Replace(secret, "-", "", -1), " ", "", -1))
+	secEndodedPadLen := 8 - (len(secEncoded) % 8)
+	if secEndodedPadLen < 8 {
+		secEncoded = secEncoded + strings.Repeat("=", secEndodedPadLen)
+	}
 	//fmt.Printf("NORMALIZED: %s\n", secEncoded)
 	return base32.StdEncoding.DecodeString(secEncoded)
 }
@@ -187,12 +189,12 @@ func (cmd *cmdOptions) addCmdHandler(name string) error {
 		Hash:   cmd.otpHmac,
 	}
 
+	fmt.Printf("ADDING ENTRY: %s/%v/%d\n", name, e, len(e.Secret))
 	err := e.Validate()
 	if err != nil {
 		return err
 	}
 	// check basic values
-	fmt.Printf("ADDING ENTRY: %s/%v\n", name, e)
 	err = cmd.pemFileMap.add(name, e)
 	if err != nil {
 		return err
