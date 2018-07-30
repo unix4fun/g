@@ -9,7 +9,7 @@ a simple TOTP / google authenticator client.
 it will generate TOTP tokens for the configured accounts and secure data at rest.
 
 *WARNING*
-This is a project in development, some trivial backup/rollback strategies are being implemented, 
+This is a project in development, some trivial backup/rollback strategies are being implemented,
 but it seems reliable enough that i use it everyday on various accounts.
 
 
@@ -65,10 +65,26 @@ Retype Init Password: <type your password again>
 
 ### Add Entry then Get Token
 
-like you're setting up  your 2FA for your gmail account
+like you're setting up  your 2FA for your gmail account.
+*WARNING*
+Remember if you have an history file, THIS WILL BE IN YOUR HISTORY.
+Most shells allows to execute a command without being history logged check your shell documentation.
+
+Example, for now with bash, you can tell history to NOT log this command:
+```
+   export HISTIGNORE="g *"
+```
+or setup a no history space prefix like :
+```
+   export HISTCONTROL=ignorespace
+```
+and prefix your commands for token by a space.
+
+
+This might be the reason for a format/editing change later.
 
 ```
-$ g -add gmail -sec <google 2fa secret> 
+$ g -add gmail -sec <google 2fa secret>
 Password:
 .. debug message to say it's ok...
 $ g 
@@ -87,10 +103,10 @@ but some services provides even higher baseline, like sha256 / 8 digits token, w
 ```
 $ g -add patatra -sec <my secret> -hmac sha256 -digit 8
 ...
-$ g 
+$ g
 Password:
-account    | totp  
----------- | ----  
+account    | totp
+---------- | ----
 gmail      | 707792
 patatra    | 71997833
 
@@ -124,6 +140,7 @@ No particular reason for using JSON, i guess i was brainwashed by the whole JSON
 
 ## TODO
 * remove debug messages.
+* might move the secret input as a terminal input instead of command line (to avoid people leave their history full of secret)
 * cleaner CLI.
 * rewrite help messages.
 * implement unit test everywhere.
