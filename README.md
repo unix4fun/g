@@ -17,8 +17,8 @@ but it seems reliable enough that i use it everyday on various accounts.
 make sure you have a properly installed [golang](https://golang.org) and $GOPATH etc..
 then :
 ```
-   $ go get github.com/unix4fun/g
-   $ g -h
+$ go get github.com/unix4fun/g
+$ g -h
 
 Usage of g:
   -add string
@@ -50,7 +50,7 @@ Usage of g:
 
 the default secret storage lies in ~/.config/g.pem but you can ALWAYS give the pem file you want to operate on by using:
 ```
-   -pem <pemfile>
+...  -pem <pemfile>
 ```
 
 ### Initialize Secret Storage
@@ -58,9 +58,9 @@ the default secret storage lies in ~/.config/g.pem but you can ALWAYS give the p
 to access your tokens, you will be asked your password/passphrase whatever..
 
 ```
-   $ g -init
-	 Init Password: <type your password>
-   Retype Init Password: <type your password again>
+$ g -init
+Init Password: <type your password>
+Retype Init Password: <type your password again>
 ```
 
 ### Add Entry then Get Token
@@ -68,16 +68,16 @@ to access your tokens, you will be asked your password/passphrase whatever..
 like you're setting up  your 2FA for your gmail account
 
 ```
-	$ g -add gmail -sec <google 2fa secret> 
-  Password:
-  .. message to say it's ok...
-  $ g 
-  Password:
-  account    | totp  
-  ---------- | ----  
-  gmail      | 357119
+$ g -add gmail -sec <google 2fa secret> 
+Password:
+.. debug message to say it's ok...
+$ g 
+Password:
+account    | totp  
+---------- | ----  
+gmail      | 357119
 
-  [==        ] TTL
+[==        ] TTL
 ```
 
 now you can add all your tokens one by one when necessary.
@@ -85,16 +85,16 @@ tokens by default adopts google authenticator baseline (sha1 / 6 digits)
 
 but some services provides even higher baseline, like sha256 / 8 digits token, which is also supported:
 ```
-	$ g -add patatra -sec <my secret> -hmac sha256 -digit 8
-	...
-  $ g 
-  Password:
-  account    | totp  
-  ---------- | ----  
-  gmail      | 707792
-  patatra    | 71997833
-  
-  [========= ] TTL
+$ g -add patatra -sec <my secret> -hmac sha256 -digit 8
+...
+$ g 
+Password:
+account    | totp  
+---------- | ----  
+gmail      | 707792
+patatra    | 71997833
+
+[========= ] TTL
 ```
 
 ## Data at rest
@@ -103,9 +103,9 @@ token config are in a JSON format encrypted using [PEMAEAD](https://github.com/u
 you can decrypt them at any moment to peek if necessary and re-encrypt a payload as necessary too
 
 ```
-	$ g -dec
-	Password:
-	{
+$ g -dec
+Password:
+{
  	"gmail": {
   	"secret": "proutpro",
   	"hash": "sha1",
@@ -116,7 +116,7 @@ you can decrypt them at any moment to peek if necessary and re-encrypt a payload
   	"hash": "sha256",
   	"digit": 8
  	}
-	}
+}
 ```
 
 No particular reason for using JSON, i guess i was brainwashed by the whole JSON crap craze everywhere instead of using a simpler format (CSV?), which mean i might move to a simpler format later, but the tool will manage to handle backward compatibility so don't worry.
