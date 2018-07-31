@@ -21,7 +21,7 @@ import (
 )
 
 var (
-	Version              = "0.1.0"
+	Version              = "0.1.1"
 	totpPemFile          = ".config/g.pem"
 	regularDisplayFormat = []string{
 		"%-10.10s | %-6s\n", // display header
@@ -141,6 +141,7 @@ type cmdOptions struct {
 	otpEntry  string
 	otpSecret string
 	otpDigit  int
+	otpPeriod int
 	otpHmac   string
 }
 
@@ -174,6 +175,30 @@ func (cmd *cmdOptions) getPasswd() (err error) {
 	return nil
 }
 
+func (cmd *cmdOptions) qrCmdHandler(imgfile string) error {
+	name, e, err := qrRead(imgfile)
+	if err != nil {
+		return err
+	}
+
+	err = e.Validate()
+	if err != nil {
+		return err
+	}
+
+	err = cmd.pemFileMap.add(name, *e)
+	if err != nil {
+		return err
+	}
+
+	err = fileWrite(cmd.pemFile, cmd.pemFilePasswd, cmd.pemFileMap)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (cmd *cmdOptions) addCmdHandler(name string) error {
 	fmt.Printf("adding %s now!\n", name)
 	if len(cmd.otpSecret) == 0 {
@@ -186,6 +211,7 @@ func (cmd *cmdOptions) addCmdHandler(name string) error {
 	e := totpEntry{
 		Secret: cmd.otpSecret,
 		Digit:  cmd.otpDigit,
+		Period: cmd.otpPeriod,
 		Hash:   cmd.otpHmac,
 	}
 
@@ -396,11 +422,13 @@ func main() {
 	pemDecryptFlag := flag.Bool("dec", false, "decrypt PEM file and output on stdout")
 
 	// actual command operation
+	addQrFlag := flag.String("qr", "", "scan & add from QRcode image file")
 	addFlag := flag.String("add", "", "add entry <name>")
 	rmFlag := flag.String("rm", "", "remove entry <name>")
 	updFlag := flag.String("upd", "", "update entry <name>")
 	secFlag := flag.String("sec", "", "TOTP shared secret (valid: len>0)")
 	digitFlag := flag.Int("digit", 6, "TOTP token size (valid: {6,7,8})")
+	periodFlag := flag.Int("period", 30, "TOTP window (default: 30)")
 	hmacFlag := flag.String("hmac", "sha1", "TOTP hmac function (valid {sha1|sha256|sha512}) (default: sha1)")
 
 	flag.Parse()
@@ -414,6 +442,7 @@ func main() {
 		pemFile:   *pemFlag,
 		otpSecret: strings.TrimSpace(*secFlag),
 		otpDigit:  *digitFlag,
+		otpPeriod: *periodFlag,
 		otpHmac:   strings.TrimSpace(*hmacFlag),
 	}
 
@@ -468,11 +497,22 @@ func main() {
 	}
 	*/
 
+	addqr := strings.TrimSpace(*addQrFlag)
 	add := strings.TrimSpace(*addFlag)
 	rm := strings.TrimSpace(*rmFlag)
 	upd := strings.TrimSpace(*updFlag)
 
 	switch {
+	case len(addqr) > 0:
+		fmt.Printf("qr code add: %s\n", addqr)
+		err := cmd.getPasswd()
+		if err != nil {
+			panic(err)
+		}
+		err = cmd.qrCmdHandler(addqr)
+		if err != nil {
+			panic(err)
+		}
 	case len(add) > 0:
 		//fmt.Printf("add '%v' to %s\n", *addFlag, cmd.pemFile)
 		err := cmd.getPasswd()
@@ -532,7 +572,7 @@ func main() {
 				f = sha512.New
 			}
 
-			t := totp.New(f, b32secret, v.Digit, 30)
+			t := totp.New(f, b32secret, v.Digit, v.Period)
 			//left, token, err := t.GetNowWithStep()
 			token, err := t.GetNow()
 			if err != nil {

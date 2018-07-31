@@ -63,7 +63,16 @@ Init Password: <type your password>
 Retype Init Password: <type your password again>
 ```
 
-### Add Entry then Get Token
+
+### Add Entry with QrCode
+
+Save the QRcode PNG file then thanks to an [external qrdecoding module](github.com/tuotoo/qrcode) we can read QR code directly,
+note that it has not been extensively tested yet.
+```
+   $ g -qr /path/to/qrcode.png
+```
+
+### Add Entry Manually 
 
 like you're setting up  your 2FA for your gmail account.
 *WARNING*
@@ -87,6 +96,11 @@ This might be the reason for a format/editing change later.
 $ g -add gmail -sec <google 2fa secret>
 Password:
 .. debug message to say it's ok...
+```
+
+
+### Get Tokens
+```
 $ g 
 Password:
 account    | totp  

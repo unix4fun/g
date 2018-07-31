@@ -4,15 +4,105 @@ import (
 	"bytes"
 	"errors"
 	"io/ioutil"
+	"net/url"
 	"os"
+	"strconv"
+	"strings"
 
+	"github.com/tuotoo/qrcode"
 	"github.com/unix4fun/pemaead"
 )
 
 var (
-	ErrIO     = errors.New("I/O error")
-	ErrCrypto = errors.New("crypto error")
+	ErrIO         = errors.New("I/O error")
+	ErrCrypto     = errors.New("crypto error")
+	ErrInvalidUrl = errors.New("invalid otp url")
+	ErrInvalidQr  = errors.New("invalid qrcode")
 )
+
+// XXX this function is not clean yet.. but does the job for now..
+func urlToTotpEntry(otpurl string) (string, *totpEntry, error) {
+	var issuer string
+
+	u, err := url.Parse(otpurl)
+	if err != nil {
+		return "", nil, err
+	}
+
+	if u.Host != "totp" {
+		return "", nil, ErrInvalidQr
+	}
+
+	v, err := url.ParseQuery(u.RawQuery)
+	if err != nil {
+		return "", nil, err
+	}
+
+	// issuer
+	issuerArray := strings.Split(u.Path[1:], ":")
+	switch len(issuerArray) {
+	case 1:
+		issuer = issuerArray[0]
+	case 2:
+		issuer = issuerArray[1]
+	default:
+		return "", nil, ErrInvalidQr
+	}
+
+	sstr, ok := v["secret"]
+	if !ok {
+		return "", nil, ErrInvalidQr
+	}
+
+	dstr, ok := v["digits"]
+	if !ok {
+		return "", nil, ErrInvalidQr
+	}
+
+	d, err := strconv.Atoi(dstr[0])
+	if err != nil {
+		return "", nil, err
+	}
+
+	pstr, ok := v["period"]
+	if !ok {
+		return "", nil, ErrInvalidQr
+	}
+	p, err := strconv.Atoi(pstr[0])
+	if err != nil {
+		return "", nil, err
+	}
+
+	hstr, ok := v["algorithm"]
+	if !ok {
+		return "", nil, ErrInvalidQr
+	}
+	h := strings.ToLower(hstr[0])
+	e := totpEntry{
+		Secret: sstr[0],
+		Digit:  d,
+		Period: p,
+		Hash:   h,
+	}
+
+	return issuer, &e, nil
+}
+
+func qrRead(filename string) (string, *totpEntry, error) {
+	fi, err := os.Open(filename)
+	if err != nil {
+		return "", nil, err
+	}
+	defer fi.Close()
+
+	qrmatrix, err := qrcode.Decode(fi)
+	if err != nil {
+		return "", nil, err
+	}
+
+	otpurl := qrmatrix.Content
+	return urlToTotpEntry(otpurl)
+}
 
 func fileCreate(fileName string, password []byte) error {
 	fd, err := os.OpenFile(fileName, os.O_CREATE|os.O_WRONLY|os.O_EXCL|os.O_SYNC, 0700)

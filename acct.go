@@ -16,8 +16,9 @@ var (
 type totpEntry struct {
 	Secret string `json:"secret"`
 	//normSecret []byte // not exported just runtime..
-	Hash  string `json:"hash"`
-	Digit int    `json:"digit"`
+	Hash   string `json:"hash"`
+	Digit  int    `json:"digit"`
+	Period int    `json:"period"`
 }
 
 type totpMap map[string]totpEntry
@@ -25,21 +26,27 @@ type totpMap map[string]totpEntry
 func (e totpEntry) Validate() error {
 	// check secret
 	_, err := normalizeGoogleAuthSecret(e.Secret)
-
-	fmt.Printf("%v\n", err)
-	if len(e.Secret) > 0 && err == nil {
-		switch e.Hash {
-		case "sha1", "sha256", "sha512":
-			switch e.Digit {
-			case 6, 7, 8:
-				return nil
-			default:
-			}
-		default:
-		}
+	if err != nil {
+		return ErrInvalidEntry
 	}
 
-	return ErrInvalidEntry
+	if len(e.Secret) <= 0 {
+		return ErrInvalidEntry
+	}
+
+	switch e.Hash {
+	case "sha1", "sha256", "sha512":
+	default:
+		return ErrInvalidEntry
+	}
+
+	switch e.Digit {
+	case 6, 7, 8:
+	default:
+		return ErrInvalidEntry
+	}
+
+	return nil
 }
 
 //func (am *totpMap) get(name string) (a []totpEntry) {
