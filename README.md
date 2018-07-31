@@ -37,6 +37,10 @@ Usage of g:
     	update PEM file password
   -pem string
     	PEM filename to use (default "/home/rival/.config/g.pem")
+  -period int
+    	TOTP window (default: 30) (default 30)
+  -qr string
+    	scan & add from QRcode image file
   -rm string
     	remove entry <name>
   -sec string
@@ -69,7 +73,10 @@ Retype Init Password: <type your password again>
 Save the QRcode PNG file then thanks to an [external qrdecoding module](github.com/tuotoo/qrcode) we can read QR code directly,
 note that it has not been extensively tested yet.
 ```
-   $ g -qr /path/to/qrcode.png
+$ g -qr /path/to/qrcode.png
+qr code add: /path/to/qrcode.png
+Password:
+
 ```
 
 ### Add Entry Manually 
