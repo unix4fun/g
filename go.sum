@@ -1,0 +1,14 @@
+github.com/maruel/rs v0.0.0-20150922171536-2c81c4312fe4 h1:u9jwvcKbQpghIXgNl/EOL8hzhAFXh4ePrEP493W3tNA=
+github.com/maruel/rs v0.0.0-20150922171536-2c81c4312fe4/go.mod h1:kcRFpEzolcEklV6rD7W95mG49/sbdX/PlFmd7ni3RvA=
+github.com/tuotoo/qrcode v0.0.0-20180918164536-fe9894c01997 h1:bzMxBN46oA9WatuUD0wmeQ17P2Um+686WwT4o1atz1Y=
+github.com/tuotoo/qrcode v0.0.0-20180918164536-fe9894c01997/go.mod h1:po3qs7h8otu6LW8Z+uDfiiGqR00w0Op+BJAMAAl1yu4=
+github.com/unix4fun/hotp v0.1.0 h1:Qdn7emcgAu8oyzO2HwfIbJPmTGgwIRWCU14P0QPVxwA=
+github.com/unix4fun/hotp v0.1.0/go.mod h1:zunKVX2JzGz8fum0+4zllJdbaGrYP4CE9mwRgzh16es=
+github.com/unix4fun/pemaead v0.1.0 h1:sytt6A12bV9UqYTMGdFdzSgvpoy6IcKJoazVV8UjQpY=
+github.com/unix4fun/pemaead v0.1.0/go.mod h1:Gnf8t4TUVryX2OKHBc1C61jz471t18K1B39aTeIFlH4=
+github.com/unix4fun/totp v0.1.0 h1:+1mf5XvouY6HCUA2eavazODykKsdrRu7Dzc2VCSpBbQ=
+github.com/unix4fun/totp v0.1.0/go.mod h1:SIBSAhDvwpviQWyiX1eE+zv/rd0qtNsvpIcLOMKpTB4=
+golang.org/x/crypto v0.0.0-20181015023909-0c41d7ab0a0e h1:IzypfodbhbnViNUO/MEh0FzCUooG97cIGfdggUrUSyU=
+golang.org/x/crypto v0.0.0-20181015023909-0c41d7ab0a0e/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
+golang.org/x/sys v0.0.0-20181019160139-8e24a49d80f8 h1:R91KX5nmbbvEd7w370cbVzKC+EzCTGqZq63Zad5IcLM=
+golang.org/x/sys v0.0.0-20181019160139-8e24a49d80f8/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
