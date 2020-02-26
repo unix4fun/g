@@ -158,6 +158,10 @@ func (cmd *cmdOptions) validate() error {
 		return ErrInvalidOpt
 	}
 
+	if cmd.otpPeriod <= 0 {
+		return ErrInvalidOpt
+	}
+
 	return nil
 }
 
@@ -260,6 +264,7 @@ func (cmd *cmdOptions) updCmdHandler(name string) error {
 		Secret: cmd.otpSecret,
 		Digit:  cmd.otpDigit,
 		Hash:   cmd.otpHmac,
+		Period: cmd.otpPeriod,
 	}
 
 	err := e.Validate()
